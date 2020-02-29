@@ -4,9 +4,9 @@ deploy:
   variables:
     PROJECT_DIR: "mof-test"
   before_script:
-    - apt-get update -qq
-  script:
+    - apt update
     - apt install rsync
+  script:
     - rsync -rv --exclude='_bak_*/' . ./tmp
     - echo "$DEPLOY_SERVER_PRIVATE_KEY" > dkey
     - chmod 700 dkey
