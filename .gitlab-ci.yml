@@ -1,13 +1,15 @@
 deploy:
   stage: deploy
   image: gitlab/dind:latest
-
+  variables:
+    PROJECT_DIR: "mof-test"
   before_script:
     - apt-get update -qq
   script:
     - echo "$DEPLOY_SERVER_PRIVATE_KEY" > dkey
     - chmod 700 dkey
-    - ssh -o StrictHostKeyChecking=no -i dkey root@$DEPLOYMENT_SERVER_IP "mkdir mof-prod; cd mof-prod; git checkout "$CI_COMMIT_BRANCH"; git pull; git docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}; docker-compose -f docker-compose.yml stop; docker-compose -f docker-compose.yml rm; docker-compose -f docker-compose.yml pull; docker-compose -f docker-compose.yml up -d"
+    - scp -o StrictHostKeyChecking=no -i ./dkey -r . root@$DEPLOYMENT_SERVER_IP:~/"$PROJECT_DIR"/
+    - ssh -o StrictHostKeyChecking=no -i dkey root@$DEPLOYMENT_SERVER_IP "cd ${PROJECT_DIR}; docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}; docker-compose -f docker-compose.yml stop; docker-compose -f docker-compose.yml rm; docker-compose -f docker-compose.yml pull; docker-compose -f docker-compose.yml up -d"
   only:
     - "master"
 
