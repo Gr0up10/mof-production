@@ -1,3 +1,6 @@
+variables:
+  DOCKER_DRIVER: overlay
+
 mof-nginx-build:
   image: gitlab/dind:latest
   stage: build
@@ -8,6 +11,7 @@ mof-nginx-build:
   script:
     - echo "$FULLCHAIN_CERTIFICATE" > fullchain.pem
     - echo "KEY_CERTIFICATE" > key.pem
+    - ls
     - docker build -t "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" ./mof-nginx-prod
     - docker push "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   only:
