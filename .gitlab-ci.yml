@@ -16,7 +16,8 @@ mof-nginx-build:
     - docker push "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   only:
     - "master"
-
+  tags:
+    - main
 
 deploy:
   stage: deploy
@@ -40,4 +41,3 @@ deploy:
     - "master"
   dependencies:
     - mof-nginx-build
-
