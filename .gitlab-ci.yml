@@ -9,9 +9,8 @@ mof-nginx-build:
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
   script:
-    - echo "$FULLCHAIN_CERTIFICATE" > fullchain.pem
-    - echo "KEY_CERTIFICATE" > key.pem
-    - ls
+    - echo "$FULLCHAIN_CERTIFICATE" > ./mof-nginx-prod/fullchain.pem
+    - echo "KEY_CERTIFICATE" > ./mof-nginx-prod/key.pem
     - docker build -t "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" ./mof-nginx-prod
     - docker push "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   only:
