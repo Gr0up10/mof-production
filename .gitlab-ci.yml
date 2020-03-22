@@ -23,10 +23,13 @@ mof-nginx-build:
 
 deploy:
   stage: deploy
-  image: ubuntu:latest
+  image: alphine:latest
   variables:
     PROJECT_DIR: "mof-prod"
     EXTRA_ENV_VARIABLES: "\nALLOWED_HOST=${DEPLOYMENT_SERVER_IP}"
+  before_script:
+    - apk update
+    - apk install openssh-client
   script:
     - echo "$EXTRA_ENV_VARIABLES" >> web.env
     - mkdir tmp
