@@ -18,6 +18,7 @@ mof-nginx-build:
       - master
     changes:
       - mof-nginx-prod/*
+      - docker-compose.yml
   tags:
     - main
 
