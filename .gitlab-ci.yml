@@ -2,16 +2,12 @@ mof-nginx-build:
   image: docker:19.03.1
   stage: build
   services:
-    - name: docker:dind
-      alias: docker
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
+    - docker:dind
   before_script:
-    - docker info
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
   script:
+    - echo "$FULLCHAIN_CERTIFICATE" > fullchain.pem
+    - echo "KEY_CERTIFICATE" > key.pem
     - docker build -t "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" ./mof-nginx-prod
     - docker push "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   only:
@@ -21,7 +17,7 @@ mof-nginx-build:
 
 deploy:
   stage: deploy
-  image: gitlab/dind:latest
+  image: docker:19.03.1
   variables:
     PROJECT_DIR: "mof-prod"
     EXTRA_ENV_VARIABLES: "\nALLOWED_HOST=${DEPLOYMENT_SERVER_IP}"
@@ -30,8 +26,6 @@ deploy:
     - apt install rsync
   script:
     - echo "$EXTRA_ENV_VARIABLES" >> web.env
-    - echo "$FULLCHAIN_CERTIFICATE" > fullchain.pem
-    - echo "KEY_CERTIFICATE" > key.pem
     - rsync -rv --exclude={'_bak_*/', 'mof-nginx-prod/'} . ./tmp
     - echo "$DEPLOY_SERVER_PRIVATE_KEY" > dkey
     - chmod 700 dkey
