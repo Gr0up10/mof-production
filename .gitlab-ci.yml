@@ -14,10 +14,10 @@ mof-nginx-build:
     - docker build -t "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" ./mof-nginx-prod
     - docker push "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   only:
-    - "master"
-  rules:
-      - changes:
-          - mof-nginx-prod/*
+    refs:
+      - master
+    changes:
+      - mof-nginx-prod/*
   tags:
     - main
 
