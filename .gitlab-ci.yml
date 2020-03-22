@@ -15,11 +15,11 @@ mof-nginx-build:
     - docker push "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   only:
     - "master"
-    - changes:
-        - mof-nginx-prod/*
+  rules:
+      - changes:
+          - mof-nginx-prod/*
   tags:
     - main
-
 
 deploy:
   stage: deploy
