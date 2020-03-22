@@ -1,5 +1,5 @@
 mof-nginx-build:
-  image: docker:19.03.1
+  image: gitlab/dind:latest
   stage: build
   services:
     - docker:dind
