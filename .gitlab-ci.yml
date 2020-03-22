@@ -29,7 +29,7 @@ deploy:
     EXTRA_ENV_VARIABLES: "\nALLOWED_HOST=${DEPLOYMENT_SERVER_IP}"
   before_script:
     - apk update
-    - apk install openssh-client
+    - apk add openssh-client
   script:
     - echo "$EXTRA_ENV_VARIABLES" >> web.env
     - mkdir tmp
