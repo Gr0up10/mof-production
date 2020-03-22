@@ -27,12 +27,9 @@ deploy:
   variables:
     PROJECT_DIR: "mof-prod"
     EXTRA_ENV_VARIABLES: "\nALLOWED_HOST=${DEPLOYMENT_SERVER_IP}"
-  before_script:
-    - apt update
-    - apt install -qy rsync
   script:
     - echo "$EXTRA_ENV_VARIABLES" >> web.env
-    - rsync -rv --exclude={'_bak_*/', 'mof-nginx-prod/'} . ./tmp
+    - cp ./{web.env,docker-compose.yml} ./tmp/
     - echo "$DEPLOY_SERVER_PRIVATE_KEY" > dkey
     - chmod 700 dkey
     - scp -o StrictHostKeyChecking=no -i ./dkey -r tmp/ root@$DEPLOYMENT_SERVER_IP:~/"$PROJECT_DIR"/
