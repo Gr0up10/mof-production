@@ -23,7 +23,7 @@ mof-nginx-build:
 
 deploy:
   stage: deploy
-  image: alphine:latest
+  image: alpine:latest
   variables:
     PROJECT_DIR: "mof-prod"
     EXTRA_ENV_VARIABLES: "\nALLOWED_HOST=${DEPLOYMENT_SERVER_IP}"
