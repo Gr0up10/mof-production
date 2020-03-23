@@ -24,7 +24,7 @@ services:
 
   multi_connection:
     image: maplegend/multi_connection:master
-    command: node server --port 9001
+    command: node server --port 9001 -ssl
     restart: always
     networks:
       - redis-net
