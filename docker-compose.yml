@@ -24,12 +24,11 @@ services:
 
   multi_connection:
     image: maplegend/multi_connection:master
-    command: node server --port 9001 -ssl
+    command: node server --port 9001
     restart: always
+    hostname: multi_connection
     networks:
       - redis-net
-    ports:
-      - 9001:9001
 
   redis:
     image: redis:4.0.5-alpine
