@@ -1,6 +1,9 @@
 version: '3'
 services:
   web:
+    env_file:
+      - ./web.env
+      - ./db.env
     image: maplegend/minute-of-fame:master
     command: daphne -b 0.0.0.0 -p 80 minute_of_fame.asgi:application
     restart: always
@@ -9,7 +12,7 @@ services:
     environment:
       - RHOST=redis
     networks:
-      - redis-net
+      - main
     depends_on:
       - redis
 
@@ -18,9 +21,20 @@ services:
     command: node server --port 9001
     restart: always
     networks:
-      - redis-net
+      - main
     ports:
       - 9001:9001
+
+  db:
+    env_file:
+      - ./db.env
+    image: postgres
+    restart: always
+    hostname: db
+    networks:
+      - main
+    volumes:
+      - ./db_data:/var/lib/postgresql/
 
   redis:
     image: redis:4.0.5-alpine
@@ -28,12 +42,12 @@ services:
     restart: always
     hostname: redis
     networks:
-      - redis-net
+      - main
     volumes:
       - redis-data:/data
 
 networks:
-  redis-net:
+  main:
 
 volumes:
   redis-data:
