@@ -1,14 +1,24 @@
 version: '3'
 services:
+  nginx:
+    image: maplegend/mof-nginx:master
+    networks:
+      - main
+    depends_on:
+      - web
+    ports:
+      - 80:80
+      - 443:443
+      - 9001:9001
+
   web:
     env_file:
       - ./web.env
       - ./db.env
     image: maplegend/minute-of-fame:master
-    command: daphne -b 0.0.0.0 -p 80 minute_of_fame.asgi:application
+    command: daphne -b 0.0.0.0 -p 8000 minute_of_fame.asgi:application
     restart: always
-    ports:
-      - "80:80"
+    hostname: web
     environment:
       - RHOST=redis
     networks:
@@ -20,10 +30,9 @@ services:
     image: maplegend/multi_connection:master
     command: node server --port 9001
     restart: always
+    hostname: multi_connection
     networks:
       - main
-    ports:
-      - 9001:9001
 
   db:
     env_file:

@@ -1,17 +1,48 @@
+variables:
+  DOCKER_DRIVER: overlay
+
+mof-nginx-build:
+  image: gitlab/dind:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+  script:
+    - >
+      if git diff HEAD~ --name-only|grep mof-nginx-prod; then
+        echo "$FULLCHAIN_CERTIFICATE" > ./mof-nginx-prod/fullchain.pem
+        echo "$KEY_CERTIFICATE" > ./mof-nginx-prod/key.pem
+        docker build -t "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" ./mof-nginx-prod
+        docker push "$CI_NGINX_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+      fi;
+  only:
+    refs:
+      - master
+    changes:
+      - mof-nginx-prod/*
+      - .gitlab-ci.yml
+  tags:
+    - main
+
 deploy:
   stage: deploy
-  image: gitlab/dind:latest
+  image: alpine:latest
   variables:
-    PROJECT_DIR: "mof-test"
+    PROJECT_DIR: "mof-prod"
+    EXTRA_ENV_VARIABLES: "\nALLOWED_HOST=${DEPLOYMENT_SERVER_IP}"
   before_script:
-    - apt update
-    - apt install rsync
+    - apk update
+    - apk add openssh-client
   script:
-    - rsync -rv --exclude='_bak_*/' . ./tmp
+    - echo "$EXTRA_ENV_VARIABLES" >> web.env
+    - mkdir "$PROJECT_DIR"
+    - cp web.env docker-compose.yml ./"$PROJECT_DIR"/
     - echo "$DEPLOY_SERVER_PRIVATE_KEY" > dkey
     - chmod 700 dkey
-    - scp -o StrictHostKeyChecking=no -i ./dkey -r tmp/ root@$DEPLOYMENT_SERVER_IP:~/"$PROJECT_DIR"/
+    - scp -o StrictHostKeyChecking=no -i ./dkey -r "$PROJECT_DIR"/ root@$DEPLOYMENT_SERVER_IP:~/
     - ssh -o StrictHostKeyChecking=no -i dkey root@$DEPLOYMENT_SERVER_IP "cd ${PROJECT_DIR}; docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}; docker-compose -f docker-compose.yml stop; docker-compose -f docker-compose.yml rm; docker-compose -f docker-compose.yml pull; docker-compose -f docker-compose.yml up -d"
   only:
     - "master"
-
+  dependencies:
+    - mof-nginx-build
