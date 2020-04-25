@@ -30,6 +30,7 @@ services:
       - db
 
   distributor:
+    restart: always
     env_file:
       - ./service.env
       - ./secret.env
@@ -43,6 +44,7 @@ services:
       - 4321:4321
 
   chat:
+    restart: always
     env_file:
       - ./service.env
     image: rg.nl-ams.scw.cloud/minuteoffame/mof-chat:master
@@ -53,6 +55,7 @@ services:
       - distributor
 
   queue:
+    restart: always
     env_file:
       - ./service.env
     image: rg.nl-ams.scw.cloud/minuteoffame/mof-queue:master
@@ -63,6 +66,7 @@ services:
       - distributor
 
   poll:
+    restart: always
     env_file:
       - ./service.env
     image: rg.nl-ams.scw.cloud/minuteoffame/mof-poll:master
