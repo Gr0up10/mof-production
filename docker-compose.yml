@@ -18,7 +18,7 @@ services:
       - ./db.env
       - ./secret.env
     image: rg.nl-ams.scw.cloud/minuteoffame/minute-of-fame:master
-    command: /bin/sh -c "python manage.py migrate && python manage.py createcachetable && python manage.py runserver 0.0.0.0:80"
+    command: /bin/sh -c "python manage.py migrate && python manage.py createcachetable && python manage.py runserver 0.0.0.0:8000"
     restart: always
     hostname: web
     environment:
