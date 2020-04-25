@@ -6,10 +6,12 @@ services:
       - main
     depends_on:
       - web
+      - distributor
     ports:
       - 80:80
       - 443:443
       - 9001:9001
+      - 4321:4321
 
   web:
     env_file:
@@ -40,8 +42,6 @@ services:
       - main
     depends_on:
       - web
-    ports:
-      - 4321:4321
 
   chat:
     restart: always
