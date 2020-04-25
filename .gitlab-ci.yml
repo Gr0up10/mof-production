@@ -21,7 +21,6 @@ mof-nginx-build:
       - master
     changes:
       - mof-nginx-prod/*
-      - .gitlab-ci.yml
   tags:
     - main
 
@@ -37,11 +36,11 @@ deploy:
   script:
     - echo "$EXTRA_ENV_VARIABLES" >> web.env
     - mkdir "$PROJECT_DIR"
-    - cp db.env web.env docker-compose.yml ./"$PROJECT_DIR"/
+    - cp db.env web.env secret.env service.env docker-compose.yml ./"$PROJECT_DIR"/
     - echo "$DEPLOY_SERVER_PRIVATE_KEY" > dkey
     - chmod 700 dkey
     - scp -o StrictHostKeyChecking=no -i ./dkey -r "$PROJECT_DIR"/ root@$DEPLOYMENT_SERVER_IP:~/
-    - ssh -o StrictHostKeyChecking=no -i dkey root@$DEPLOYMENT_SERVER_IP "cd ${PROJECT_DIR}; docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}; docker-compose -f docker-compose.yml stop; docker-compose -f docker-compose.yml rm; docker-compose -f docker-compose.yml pull; docker-compose -f docker-compose.yml up -d"
+    - ssh -o StrictHostKeyChecking=no -i dkey root@$DEPLOYMENT_SERVER_IP "cd ${PROJECT_DIR}; docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}; docker-compose -f docker-compose.yml stop; docker-compose -f docker-compose.yml rm; docker system prune -d; docker-compose -f docker-compose.yml pull; docker-compose -f docker-compose.yml up -d"
   only:
     - "master"
   dependencies:

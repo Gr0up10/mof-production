@@ -13,18 +13,64 @@ services:
 
   web:
     env_file:
+      - ./service.env
       - ./web.env
       - ./db.env
-    image: maplegend/minute-of-fame:master
-    command: /bin/sh -c "python manage.py migrate && python manage.py createcachetable && daphne -b 0.0.0.0 -p 8000 minute_of_fame.asgi:application"
+      - ./secret.env
+    image: rg.nl-ams.scw.cloud/minuteoffame/minute-of-fame:master
+    command: /bin/sh -c "python manage.py migrate && python manage.py createcachetable && python manage.py runserver 0.0.0.0:80"
     restart: always
     hostname: web
     environment:
       - RHOST=redis
+      - NODE_ENV=production
     networks:
       - main
     depends_on:
-      - redis
+      - db
+
+  distributor:
+    env_file:
+      - ./service.env
+      - ./secret.env
+    image: rg.nl-ams.scw.cloud/minuteoffame/websocket-distributor:master
+    hostname: distributor
+    networks:
+      - main
+    depends_on:
+      - web
+    ports:
+      - 4321:4321
+
+  chat:
+    env_file:
+      - ./service.env
+    image: rg.nl-ams.scw.cloud/minuteoffame/mof-chat:master
+    hostname: chat
+    networks:
+      - main
+    depends_on:
+      - distributor
+
+  queue:
+    env_file:
+      - ./service.env
+    image: rg.nl-ams.scw.cloud/minuteoffame/mof-queue:master
+    hostname: queue
+    networks:
+      - main
+    depends_on:
+      - distributor
+
+  poll:
+    env_file:
+      - ./service.env
+    image: rg.nl-ams.scw.cloud/minuteoffame/mof-poll:master
+    hostname: chat
+    networks:
+      - main
+    depends_on:
+      - distributor
 
   multi_connection:
     image: maplegend/multi_connection:master
@@ -42,18 +88,14 @@ services:
     hostname: db
     networks:
       - main
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - ./db_data:/var/lib/postgresql/
 
-  redis:
-    image: redis:4.0.5-alpine
-    command: ["redis-server", "--appendonly", "yes"]
-    restart: always
-    hostname: redis
-    networks:
-      - main
-    volumes:
-      - redis-data:/data
 
 networks:
   main:
