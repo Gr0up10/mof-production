@@ -100,6 +100,29 @@ services:
     volumes:
       - ./db_data:/var/lib/postgresql/
 
+  kurento:
+    hostname: kurento
+    image: kurento/kurento-media-server
+    ports:
+      - 8888:8888
+    volumes:
+      - ./recs:/recs
+    networks:
+      - main
+
+  stream:
+    env_file:
+      - ./service.env
+    image: rg.nl-ams.scw.cloud/minuteoffame/mof-stream:master
+    hostname: stream
+    environment:
+      - KMS_URL=ws://kurento:8888/kurento
+    networks:
+      - main
+    depends_on:
+      - kurento
+      - distributor
+
 
 networks:
   main:
