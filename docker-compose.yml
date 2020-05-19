@@ -118,8 +118,6 @@ services:
     restart: always
     volumes:
       - ${PWD}/turnserver.conf:/etc/turnserver.conf
-    networks:
-      - main
 
   stream:
     env_file:
