@@ -109,6 +109,17 @@ services:
       - ./recs:/recs
     networks:
       - main
+    depends_on:
+      - coturn
+
+  coturn:
+    image: instrumentisto/coturn
+    network_mode: host
+    restart: always
+    volumes:
+      - ${PWD}/turnserver.conf:/etc/turnserver.conf
+    networks:
+      - main
 
   stream:
     env_file:
