@@ -123,7 +123,7 @@ services:
     restart: always
     volumes:
       - ${PWD}/turnserver.conf:/etc/turnserver.conf
-      - /etc/letsencrypt/live/fame.savink.in:/etc/ssl
+      - /etc/letsencrypt/live/fame.savink.in:/usr/local/etc
 
   stream:
     env_file:
