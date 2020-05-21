@@ -36,7 +36,7 @@ deploy:
   script:
     - echo "$EXTRA_ENV_VARIABLES" >> web.env
     - mkdir "$PROJECT_DIR"
-    - cp db.env web.env secret.env service.env docker-compose.yml ./"$PROJECT_DIR"/
+    - cp db.env web.env secret.env service.env docker-compose.yml turnserver.conf ./"$PROJECT_DIR"/
     - echo "$DEPLOY_SERVER_PRIVATE_KEY" > dkey
     - chmod 700 dkey
     - scp -o StrictHostKeyChecking=no -i ./dkey -r "$PROJECT_DIR"/ root@$DEPLOYMENT_SERVER_IP:~/
