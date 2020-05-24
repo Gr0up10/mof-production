@@ -102,7 +102,7 @@ services:
 
   kurento:
     hostname: kurento
-    image: kurento/kurento-media-server
+    image: maplegend/kurento:latest
     environment:
       - KMS_STUN_IP=51.15.64.125
       - KMS_STUN_PORT=3478
@@ -113,6 +113,7 @@ services:
       - 8888:8888
     volumes:
       - ./recs:/recs
+      - ./tst.mp4:/tst.mp4
     networks:
       - main
     depends_on:
