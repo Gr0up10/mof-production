@@ -131,7 +131,7 @@ services:
     image: rg.nl-ams.scw.cloud/minuteoffame/mof-stream:master
     hostname: stream
     environment:
-      - KMS_URL=ws://kurento:8888/kurento
+      - KMS_URL=ws://host.docker.internal:8888/kurento
     networks:
       - main
     depends_on:
