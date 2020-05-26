@@ -108,6 +108,8 @@ services:
     environment:
       - KMS_STUN_IP=51.15.64.125
       - KMS_STUN_PORT=3478
+      - KMS_MIN_PORT=40000
+      - KMS_MAX_PORT=50000
       #- KMS_TURN_URL=username:password@51.15.64.125:3478
       #- KMS_EXTERNAL_ADDRESS=51.15.64.125
       #- KMS_TURN_URL=username:password@51.15.64.125:3478
