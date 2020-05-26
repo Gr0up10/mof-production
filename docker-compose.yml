@@ -103,14 +103,14 @@ services:
   kurento:
     hostname: kurento
     image: maplegend/kurento:latest
+    restart: always
+    network_mode: host
     environment:
       - KMS_STUN_IP=51.15.64.125
       - KMS_STUN_PORT=3478
       #- KMS_TURN_URL=username:password@51.15.64.125:3478
       #- KMS_EXTERNAL_ADDRESS=51.15.64.125
       #- KMS_TURN_URL=username:password@51.15.64.125:3478
-    ports:
-      - 8888:8888
     volumes:
       - ./recs:/recs
       - ./tst.mp4:/tst.mp4
