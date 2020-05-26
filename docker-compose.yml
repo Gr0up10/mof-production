@@ -134,6 +134,7 @@ services:
       - KMS_URL=ws://192.168.0.1:8888/kurento
     networks:
       - main
+      - dockernet
     depends_on:
       - kurento
       - distributor
