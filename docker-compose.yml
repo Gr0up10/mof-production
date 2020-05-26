@@ -114,8 +114,6 @@ services:
     volumes:
       - ./recs:/recs
       - ./tst.mp4:/tst.mp4
-    networks:
-      - main
     depends_on:
       - coturn
 
