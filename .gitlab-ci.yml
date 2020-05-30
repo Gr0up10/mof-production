@@ -45,3 +45,5 @@ deploy:
     - "master"
   dependencies:
     - mof-nginx-build
+  tags:
+    - main
