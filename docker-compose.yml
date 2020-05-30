@@ -106,7 +106,7 @@ services:
     restart: always
     network_mode: host
     environment:
-      - KMS_STUN_IP=51.15.64.125
+      - KMS_STUN_IP=51.15.91.233
       - KMS_STUN_PORT=3478
       - KMS_MIN_PORT=40000
       - KMS_MAX_PORT=50000
